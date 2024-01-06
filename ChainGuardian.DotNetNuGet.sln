@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6BAD26F5-8A49-4B92-B211-40B20E6EDE8D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChainGuardian", "src\ChainGuardian\ChainGuardian.csproj", "{92070DA5-C58C-4080-BBA7-A011325F682A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92070DA5-C58C-4080-BBA7-A011325F682A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92070DA5-C58C-4080-BBA7-A011325F682A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92070DA5-C58C-4080-BBA7-A011325F682A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92070DA5-C58C-4080-BBA7-A011325F682A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{92070DA5-C58C-4080-BBA7-A011325F682A} = {6BAD26F5-8A49-4B92-B211-40B20E6EDE8D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9F0FD974-4AF3-473B-91B5-188CC4103FD0}
+	EndGlobalSection
+EndGlobal
