@@ -23,3 +23,14 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+
+  verify:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+    - name: Generate SBOM
+      uses: CycloneDX/gh-dotnet-generate-sbom@master
+      with:
+        path: ./src/ChainGuardian/ChainGuardian.DotNetNuget.sln
+        json: true
