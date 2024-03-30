@@ -34,5 +34,5 @@ jobs:
     - name: Generate SBOM
       uses: CycloneDX/gh-dotnet-generate-sbom@master
       with:
-        path: .\ChainGuardian.DotNetNuGet.sln
+        path: ChainGuardian.DotNetNuGet.sln
         json: true
