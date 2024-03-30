@@ -29,11 +29,9 @@ jobs:
     needs: build
     steps:
     - uses: actions/checkout@v4
-    - uses: advanced-security/sbom-generator-action@v0.0.1
-      id: sbom
-      env: 
-        GITHUB_TOKEN: ${{ github.token }}
-    - uses: actions/upload-artifact@v3.1.0
-      with: 
-        path: ${{steps.sbom.outputs.fileName }}
-        name: "SBOM"
+    - name: Generate JSON SBOM
+      uses: CycloneDX/gh-dotnet-generate-sbom@master
+      with:
+        path: ChainGuardian.DotNetNuGet.sln
+        json: true
+        github-bearer-token: ${{ secrets.GITHUB_TOKEN }}
