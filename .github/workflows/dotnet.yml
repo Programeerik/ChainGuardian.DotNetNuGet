@@ -25,13 +25,25 @@ jobs:
       run: dotnet test --no-build --verbosity normal
 
   verify:
+    
     runs-on: ubuntu-latest
     needs: build
+    
     steps:
     - uses: actions/checkout@v4
-    - name: Generate JSON SBOM
-      uses: CycloneDX/gh-dotnet-generate-sbom@master
+    
+    - name: Install CycloneDX in dotnet cli
+      run: dotnet tool install --global CycloneDX
+    
+    - name: CycloneDX .NET Generate SBOM
+      run: dotnet CycloneDX ChainGuardian.DotNetNuGet.sln -j -o . 
+    
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.0
       with:
-        path: ChainGuardian.DotNetNuGet.sln
-        json: true
-        github-bearer-token: ${{ secrets.GITHUB_TOKEN }}
+          path: | 
+              ChainGuardian.DotNetNuGet.1.0.0.nupkg
+              bom.json
+          name: DocGenerator
+          if-no-files-found: error
+          retention-days: 5
