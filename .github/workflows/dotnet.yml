@@ -42,8 +42,7 @@ jobs:
       uses: actions/upload-artifact@v3.1.0
       with:
           path: | 
-              ChainGuardian.DotNetNuGet.1.0.0.nupkg
               bom.json
-          name: DocGenerator
+          name: ChainGuardian-DotNet-BOM
           if-no-files-found: error
           retention-days: 5
