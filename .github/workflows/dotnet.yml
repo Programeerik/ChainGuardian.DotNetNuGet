@@ -42,8 +42,8 @@ jobs:
       with:
         scan-type: 'fs'
         ignore-unfixed: false
-        format: 'sarif'
-        output: 'trivy-results.sarif'
+        # format: 'sarif'
+        # output: 'trivy-results.sarif'
         severity: 'MEDIUM,HIGH,CRITICAL'
 
     - name: Upload Trivy scan results to GitHub Security tab
