@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="refit" Version="7.0.0" />
-    <PackageReference Include="System.text.regularexpressions" Version="4.3.1" />
+    <PackageReference Include="System.text.regularexpressions" Version="4.3.0" />
   </ItemGroup>
 
 </Project>
