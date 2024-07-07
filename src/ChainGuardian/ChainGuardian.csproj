@@ -5,6 +5,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <NuGetAudit>True</NuGetAudit>
+    <NugetAuditMode>All</NugetAuditMode>
+    <NuGetAuditLevel>low</NuGetAuditLevel>
+
   </PropertyGroup>
 
   <ItemGroup>
