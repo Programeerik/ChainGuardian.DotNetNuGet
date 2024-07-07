@@ -6,6 +6,11 @@ name: .NET
 on:
   workflow_dispatch
 
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
 jobs:
   build:
 
@@ -31,6 +36,20 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+
+    - name: Run Trivy vulnerability scanner in repo mode
+      uses: aquasecurity/trivy-action@0.21.0
+      with:
+        scan-type: 'fs'
+        ignore-unfixed: false
+        format: 'cyclonedx'
+        output: 'result.json'
+        severity: 'MEDIUM,HIGH,CRITICAL'
+
+    # - name: Upload Trivy scan results to GitHub Security tab
+    #   uses: github/codeql-action/upload-sarif@v3
+    #   with:
+    #     sarif_file: 'trivy-results.sarif'
     
     - name: Install CycloneDX in dotnet cli
       run: dotnet tool install --global CycloneDX
@@ -39,10 +58,11 @@ jobs:
       run: dotnet CycloneDX ChainGuardian.DotNetNuGet.sln -j -o . 
     
     - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v4.3.3
       with:
           path: | 
               bom.json
+              result.json
           name: ChainGuardian-DotNet-BOM
           if-no-files-found: error
           retention-days: 5

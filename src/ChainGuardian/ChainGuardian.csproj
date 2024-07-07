@@ -10,10 +10,16 @@
     <NugetAuditMode>All</NugetAuditMode>
     <NuGetAuditLevel>low</NuGetAuditLevel>
 
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestoreLockedMode>true</RestoreLockedMode>
+
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="refit" Version="7.0.0" />
+    <PackageReference Include="System.text.regularexpressions" Version="4.3.0" />
   </ItemGroup>
 
 </Project>
