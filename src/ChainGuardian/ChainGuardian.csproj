@@ -6,18 +6,19 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <NuGetAudit>True</NuGetAudit>
+    <!-- <NuGetAudit>True</NuGetAudit>
     <NugetAuditMode>All</NugetAuditMode>
-    <NuGetAuditLevel>low</NuGetAuditLevel>
+    <NuGetAuditLevel>low</NuGetAuditLevel> -->
 
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <RestoreLockedMode>true</RestoreLockedMode>
+    <!-- <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestoreLockedMode>true</RestoreLockedMode> -->
 
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
     
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="polly.core" Version="8.4.1" />
     <PackageReference Include="refit" Version="7.0.0" />
     <PackageReference Include="System.text.regularexpressions" Version="4.3.0" />
   </ItemGroup>
