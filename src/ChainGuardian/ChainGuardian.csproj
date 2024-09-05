@@ -6,14 +6,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <!-- <NuGetAudit>True</NuGetAudit>
+    <NuGetAudit>True</NuGetAudit>
     <NugetAuditMode>All</NugetAuditMode>
-    <NuGetAuditLevel>low</NuGetAuditLevel> -->
+    <NuGetAuditLevel>low</NuGetAuditLevel>
+
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
 
     <!-- <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <RestoreLockedMode>true</RestoreLockedMode> -->
 
-    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
     
   </PropertyGroup>
 
