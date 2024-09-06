@@ -1,4 +1,4 @@
-# Securing Nugets supply chain
+# Securing NuGets supply chain
 In an era dominated by digital dependencies, the software supply chain plays a pivotal role in shaping the technology landscape. As consumers, we often download and integrate various packages to enhance the functionality of our applications. NuGet is a package manager for the Microsoft development platform. However, as we embrace the convenience of integrating third-party packages, it becomes imperative to address the lurking shadows of potential vulnerabilities in the software supply chain.
 
 ## Software Supply Chain
@@ -66,9 +66,9 @@ The output of these commands tell you a few different things:
 
 Open one of the links from the vulnerabilities that are present in your project. This will give you more information about the vulnerability and how to mitigate it. **Do not patch this vulnerability yet**, we will do this later in the workshop.
 
-Starting from .NET 8 (SDK 8.0.100) the `restore` command can audit([Auditing package dependencies for security vulnerabilities | Microsoft Learn](https://learn.microsoft.com/en-us/nuget/concepts/auditing-packages)) all your 3rd party packages. The restore command does a vulnerability check on all the packages that are being restored. If you only use a private feed, like Azure DevOps artifacts, the restore command is not able to find any vulnerabilities because azure devops by default doesn't have any CVE database or information. 
+Starting from .NET 8 (SDK 8.0.100) the `restore` command can audit([Auditing package dependencies for security vulnerabilities | Microsoft Learn](https://learn.microsoft.com/en-us/NuGet/concepts/auditing-packages)) all your 3rd party packages. The restore command does a vulnerability check on all the packages that are being restored. If you only use a private feed, like Azure DevOps artifacts, the restore command is not able to find any vulnerabilities because azure devops by default doesn't have any CVE database or information. 
 
-With the introduction of .NET 9, the private artifact store issue is fixed. There is a new property that you can add to the `nuget.config` file that allows you to set an audit source. By setting this property, NuGet gets its [vulnerabilityInfo resource](https://learn.microsoft.com/en-us/nuget/api/vulnerability-info) from a different source than the configured NuGet feeds.
+With the introduction of .NET 9, the private artifact store issue is fixed. There is a new property that you can add to the `NuGet.config` file that allows you to set an audit source. By setting this property, NuGet gets its [vulnerabilityInfo resource](https://learn.microsoft.com/en-us/NuGet/api/vulnerability-info) from a different source than the configured NuGet feeds.
 
 Run the command `dotnet restore` in the root of the repository. This will restore all the packages and do a vulnerability check on all the packages that are being restored. **Check the output of the restore command** This will output a list of all the vulnerabilities that are present in the packages that are being restored as warnings in the console.
 
@@ -77,19 +77,19 @@ The console outputs only the direct dependencies that have vulnerabilities. In t
 - `NuGetAuditMode` is set to `direct`*
 - `NuGetAuditLevel` is set to `low`
 
-*In .NET 9.0.100 SDK value of `NugetAuditMode` is changed to `all`
+*In .NET 9.0.100 SDK value of `NuGetAuditMode` is changed to `all`
 
 Add the following line to the `ChainGuardian.csproj` file:
 
 ```xml
 <PropertyGroup>
     <NuGetAudit>true</NuGetAudit>
-    <NugetAuditMode>direct</NugetAuditMode>
+    <NuGetAuditMode>direct</NuGetAuditMode>
     <NuGetAuditLevel>low</NuGetAuditLevel>
 </PropertyGroup>
 ```
 
-See all the different options that are possible in the [Microsoft documentation](https://learn.microsoft.com/en-us/nuget/concepts/auditing-packages#configuring-nuget-audit) and **make sure that the restore command will output all the vulnerabilities that are present in the packages that are being restored.**
+See all the different options that are possible in the [Microsoft documentation](https://learn.microsoft.com/en-us/NuGet/concepts/auditing-packages#configuring-NuGet-audit) and **make sure that the restore command will output all the vulnerabilities that are present in the packages that are being restored.**
 
 Now you have a situation where the restore command will output all the vulnerabilities that are present in the packages that are being restored. This is a good first step in securing your software supply chain. However, this is not enough. You need to make sure that you are aware of the vulnerabilities that are present in your software and that you are able to patch them.
 
@@ -99,9 +99,67 @@ Now you have a situation where the restore command will output all the vulnerabi
 <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 ```
 
-Run the `dotnet restore` or `dotnet build` command and see that you are no longer able to create a succesfull build. Now update the packages so that the build succeeds.
+Run the `dotnet restore` or `dotnet build` command and see that you are no longer able to create a succesfull build. **Now update the packages so that the build succeeds.**
 
 ### Restoring packages
+Great now that we have tackled the **known** vulnerabilities in our software, let's have a look at the **hidden dangers** of the software supply chain. Before we dive into the dangers, it is good to understand how the NuGet package restore works.
 
+Using third party packages requires you to restore them via NuGet. All project dependencies that are listed in either a project file or a packages.config file are restored.
+
+Package restore first installs all the direct dependencies. These are the dependencies that are directly referenced between the <PackageReference> tags or <package> tags. After the direct dependencies all transitive packages are installed. By default, NuGet will first scan the local global packages or HTTP cache folders. If the required package isn't in the local folders, NuGet tries to downloa
+
+What makes this behavior dangerous is that **NuGet ignores the order of package sources configured**. It first looks in the local NuGet cache, it the package is not present, it fires a request to each package source configured. It uses the package source that responds the quickest. This means that **by default, you don't have any control from what source you are restoring your packages**. If a restore fails, NuGet doesn't indicate the failure until after it checks all sources. NuGet reports a failure ony for the last source in the list. The error implies that the package wasn't present on any of the resources.
+
+![Nuget Supply Chain Security](/assets/images/nuget-restore.drawio.png)
+
+Package resolution for transative dependencies follows a set of rules. To understand certain risks and how to mitigate them, it is important to understand how Nuget resolves transative dependencies. Before your read further, I recommend you to read the [official documentation](https://learn.microsoft.com/en-us/nuget/concepts/dependency-resolution) on how Nuget resolves transative dependencies.
+
+Now we are going to have a look a two different types of supply chain attacks that can happen when your packages are being restored.
 
 #### Dependency confusion
+Imagine that you work at a company that uses both a public and a private Nuget feed to retrieve the packages that are used in your software projects. You have a package that is called MyCompany.Common. You have a build pipeline that builds the package and pushes it to the private Nuget feed. Via some way of research / reverse engineering, a hacker found the name of your private image used internally (MyCompany.Common). The hacker then creates a package with the same name, version and adds some malware/backdoor to the source code and uploads it to the public Nuget feed.
+
+Because of the way a nuget restore works (it uses the first source that responds the quickest), the malicious package from the public Nuget feed can be installed instead of the package from the private Nuget feed. This is called dependency confusion. The hacker is able to inject malicious code into your software without you knowing it. This is a big risk for your software supply chain.
+
+For example, you are using the package MyCompany.Common with version `1.0.0` and you reference it in your project file like this <PackageReference Include="MyCompany.Common" Version="1.0.*" />. You have a connection to your own private feed and the public Nuget feed. The hacker uploads a package with the name MyCompany.Common with version 1.0.1 to the public Nuget feed. When you run a restore, NuGet will restore the package of the hacker because of the resolution rules. You can **unintentionally** introduce a new way for your software to be vulnerable for a supply chain attack. It is good to understand how [Nuget semantic versioning works](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning?tabs=semver20sort#references-in-project-files-packagereference) and what the risks are of the way you reference your packages in your project file.
+
+##### Mitigations
+By default, having both a public and a private feed is a risk. I would recommend to **only use a private feed**. This way you (your company) has control over the packages that are available to your software projects. You can configure Nuget to only use the private feed. Configuring NuGet to use a certain package source is done via the [`nuget.config` file](https://learn.microsoft.com/en-us/nuget/reference/nuget-config-file).
+
+**Excersice**: Create a `nuget.config` file in the root of the repository and configure NuGet to use the public NuGet feed.
+
+If for some reason you use / require a public feed next to your private feed, there are a few things that you can do to mitigate the risk of dependency confusion. The first thing that you can (if you publish a package yourself) is [claim the prefix](https://learn.microsoft.com/en-us/nuget/nuget-org/id-prefix-reservation) of your packages. This means that you claim the prefix of your packages on the public Nuget feed. This way, the public Nuget feed will not allow anyone to upload a package with the same prefix as your packages. This will prevent the hacker from uploading a package with the same name as your package. In the example of `MyCompany.Common`, you would claim the prefix `MyCompany`.
+
+We are **not going** to do this in this workshop, but it is good to know that this is a possibility.
+
+The second thing that you can do is use the `nuget.config` file to configure the package sources that you want to use. You can add a `packageSourceMapping` element to the `nuget.config` file. This element allows you to map a package source to a specific feed. This way you can configure NuGet to only use the private feed for the package `MyCompany.Common`.
+
+**Excersice**: Add the package source mapping to the `nuget.config` file and configure NuGet to pull the required packages from the configured feed. 
+
+A third thing that you can do is to **configure trusted signers**. This way you can configure NuGet to only accept packages that are signed by a trusted signer. This way you can make sure that the packages that are being restored are coming from a trusted source. This is a good way to mitigate the risk of dependency confusion.
+
+**Excersice**: Configure trusted signers in the `nuget.config` file.
+
+To protect your software from the serious risks of dependency confusion, it's essential to take proactive measures. Start by configuring Nuget to only use a private feed, ensuring control over the packages integrated into your projects. If you must use a public feed, mitigate risks by claiming your package prefix, setting up package source mapping, and configuring trusted signers. Taking these steps will significantly reduce the likelihood of malicious code infiltrating your software supply chain. Act now by reviewing and updating your Nuget configurations to safeguard your projects against these potential vulnerabilities.
+
+#### Typosquatting
+A different way to attack your software supply chain with the focus on your dependencies is by using a typosquatting attack. Typosquatting is a form of cybersquatting that relies on mistakes such as typographical errors made by users when inputting a website address into a web browser. Should a user accidentally enter an incorrect website address, they may be led to an alternative website that could contain malware, phishing scams, or other malicious content.
+
+In .NET we have the command dotnet add package <package-name>. This command will add a package to your project. The package name that you provide is used to download the package from the Nuget feed. If you make a typo in the package name, Nuget will try to download the package with the typo in the name. This is where the risk of typosquatting comes in. A hacker can upload a package with a name that is very similar to a popular package. If you make a typo in the package name, Nuget will download the package from the hacker instead of the package from the original author. Looking at the MyCompany.Common example, the hacker can upload a package with the name MyCompany.Commonn to the public Nuget feed. If you make a typo in the package name, Nuget will download the package from the hacker.
+
+##### Mitigations
+Some of the mitigations that you did for the dependency confusion attack can also be used for the typosquatting attack.
+- Use a private feed, this way you have control over the packages that are available to your software projects.
+- Configure trusted signers. This way you can configure Nuget to only accept packages that are signed by a certain trusted signer.
+
+By implementing these proactive measures, you can significantly reduce the risk of typosquatting attacks on your software supply chain. Safeguard your projects against potential vulnerabilities by reviewing and updating your Nuget configurations to protect your software from malicious code infiltration.
+
+### Infiltrated build system
+
+TODO: add command to clear nuget cache `nuget locals all -clear`
+- add part about author vs repository signature
+
+TODO: Switch Typosquatting and Dependency confusion, add lock file to dependency confusion
+
+TODO: infiltrated build system
+-   reproducible builds
