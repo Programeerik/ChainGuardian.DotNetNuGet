@@ -8,4 +8,4 @@ This repo contains best practices and a workshop that gives you an overview and 
 There are two ways to get started:
 - Follow the workshop and start at [01. knowing-your-dependencies.md](./workshop/00-introduction.md)
 - Read my blogs about this subject:
--- [Securing Nuget's supply chain](https://www.blognet.tech/)
+   - [Securing Nuget's supply chain](https://www.blognet.tech/)
