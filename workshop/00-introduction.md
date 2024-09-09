@@ -14,4 +14,4 @@ Software applications are no longer built entirely from custom code. Instead, th
 ## Workshop
 In this workshop, you will learn how to secure your NuGet packages and mitigate potential security risks in your software supply chain.
 
-Get started by going to the next step: [01. knowing-your-dependencies.md](./01.%20knowing-your-dependencies.md)
+Get started by going to the next step: [01. knowing-your-dependencies.md](./01-knowing-your-dependencies.md)

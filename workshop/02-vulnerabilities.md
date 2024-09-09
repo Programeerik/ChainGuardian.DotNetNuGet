@@ -50,3 +50,5 @@ Now you have a situation where the restore command will output all the vulnerabi
 ```
 
 Run the `dotnet restore` or `dotnet build` command and see that you are no longer able to create a successful build. **Now update the packages so that the build succeeds.**
+
+Go to the next step: [03. restoring packages](./03-restoring-pacakges.md)
