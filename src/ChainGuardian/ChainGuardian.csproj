@@ -13,15 +13,18 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <RestoreLockedMode>true</RestoreLockedMode>
+    <!-- <RestoreLockedMode>true</RestoreLockedMode> -->
 
     
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="polly.core" Version="8.4.1" />
-    <PackageReference Include="refit" Version="7.0.0" />
-    <PackageReference Include="System.text.regularexpressions" Version="4.3.0" />
+    <PackageReference Include="refit" Version="7.1.2" />
+    <PackageReference Include="System.text.regularexpressions" Version="4.3.1" />
+
+    <!-- // Transitive dependencies -->
+    <PackageReference Include="System.Text.Json" Version="8.0.4"/> <!-- fix for https://github.com/advisories/GHSA-hh2w-p6rv-4g7w -->
   </ItemGroup>
 
 </Project>
