@@ -14,8 +14,6 @@
 
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     
-
-    
   </PropertyGroup>
 
   <PropertyGroup>
