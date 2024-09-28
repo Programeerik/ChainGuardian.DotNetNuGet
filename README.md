@@ -9,3 +9,7 @@ There are two ways to get started:
 - Follow the workshop and start at [01. knowing-your-dependencies.md](./workshop/00-introduction.md)
 - Read my blogs about this subject:
    - [Securing Nuget's supply chain](https://www.blognet.tech/)
+
+## Usefull links
+- [.NET reproducible builds techniques](https://github.com/dotnet/reproducible-builds/tree/main/Documentation/Reproducible-MSBuild/Techniques)
+- [Customize msbuild](https://learn.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2022)
