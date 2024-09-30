@@ -15,7 +15,17 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <!-- <RestoreLockedMode>true</RestoreLockedMode> -->
 
-    
+    <AssemblySearchPaths>
+      {CandidateAssemblyFiles};
+      {HintPathFromItem};
+      {TargetFrameworkDirectory};
+      {RawFileName}
+    </AssemblySearchPaths>
+
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+    <DisableImplicitLibraryPacksFolder>true</DisableImplicitLibraryPacksFolder>
+
+    <NetCoreTargetingPackRoot>[UNDEFINED]</NetCoreTargetingPackRoot>
   </PropertyGroup>
 
   <PropertyGroup>
