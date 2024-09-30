@@ -13,6 +13,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+<<<<<<< HEAD
     <!-- <RestoreLockedMode>true</RestoreLockedMode> -->
 
     <AssemblySearchPaths>
@@ -26,6 +27,8 @@
     <DisableImplicitLibraryPacksFolder>true</DisableImplicitLibraryPacksFolder>
 
     <NetCoreTargetingPackRoot>[UNDEFINED]</NetCoreTargetingPackRoot>
+=======
+>>>>>>> 324cabad0db86fb638a9a35ee3cd42cf3c6dc409
   </PropertyGroup>
 
   <PropertyGroup>
@@ -35,6 +38,8 @@
     <ContinuousIntegrationBuild Condition="'$(TF_BUILD)' == 'true' AND '$(ContinuousIntegrationBuild)' != 'true'">true</ContinuousIntegrationBuild>
     <!-- GitHub Actions https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables -->
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true' AND '$(ContinuousIntegrationBuild)' != 'true'">true</ContinuousIntegrationBuild>
+ 
+    <RestoreLockedMode Condition="'$(ContinuousIntegrationBuild)' == 'true'">true</RestoreLockedMode>
   </PropertyGroup>
 
   <ItemGroup>
